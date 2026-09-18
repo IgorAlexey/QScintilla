@@ -3539,6 +3539,10 @@ public:
     //! Send the Scintilla message \a msg and return a pointer result.
     void *SendScintillaPtrResult(unsigned int msg) const;
 
+    //! \overload
+    void *SendScintillaPtrResult(unsigned int msg, uintptr_t wParam,
+            intptr_t lParam) const;
+
     //! \internal
     static int commandKey(int qt_key, int &modifiers);
 

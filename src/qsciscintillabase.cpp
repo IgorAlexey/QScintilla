@@ -293,6 +293,15 @@ void *QsciScintillaBase::SendScintillaPtrResult(unsigned int msg) const
 }
 
 
+// Overloaded pointer result message send.
+void *QsciScintillaBase::SendScintillaPtrResult(unsigned int msg,
+        uintptr_t wParam, intptr_t lParam) const
+{
+    return reinterpret_cast<void *>(sci->WndProc(msg,
+            static_cast<uptr_t>(wParam), static_cast<sptr_t>(lParam)));
+}
+
+
 // Re-implemented to handle font changes
 void QsciScintillaBase::changeEvent(QEvent *e)
 {
