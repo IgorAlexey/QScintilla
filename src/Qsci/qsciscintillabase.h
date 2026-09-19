@@ -62,9 +62,37 @@ class QSCINTILLA_EXPORT QsciScintillaBase : public QAbstractScrollArea
     Q_OBJECT
 
 public:
+    //! The messages whose result is a pointer.  They go through
+    //! SendScintillaPtrResult() only, because SendScintilla() returns long
+    //! and long is 32 bits on Win64.  A scoped enum does not convert to the
+    //! unsigned int that SendScintilla() takes, so a misuse fails to compile.
+    enum class PtrMessage : unsigned int
+    {
+        //!
+        SCI_GETDIRECTFUNCTION = 2184,
+
+        //!
+        SCI_GETDIRECTPOINTER = 2185,
+
+        //!
+        SCI_GETDOCPOINTER = 2357,
+
+        //! This message returns a pointer to the document text.  Any
+        //! subsequent message will invalidate the pointer.
+        SCI_GETCHARACTERPOINTER = 2520,
+
+        //! This message returns a pointer to a range of the document text
+        //! that does not cross the gap.  Any subsequent message will
+        //! invalidate the pointer.
+        SCI_GETRANGEPOINTER = 2643,
+    };
+
+    using enum PtrMessage;
+
     //! The low-level Scintilla API is implemented as a set of messages each of
     //! which takes up to two parameters (\a wParam and \a lParam) and
-    //! optionally return a value. This enum defines all the possible messages.
+    //! optionally return a value. This enum defines all the possible messages
+    //! that do not answer with a pointer.
     enum
     {
         //!
@@ -777,12 +805,6 @@ public:
         SCI_GETTEXTLENGTH = 2183,
 
         //!
-        SCI_GETDIRECTFUNCTION = 2184,
-
-        //!
-        SCI_GETDIRECTPOINTER = 2185,
-
-        //!
         SCI_SETOVERTYPE = 2186,
 
         //!
@@ -1208,9 +1230,6 @@ public:
 
         //!
         SCI_SETVIEWEOL = 2356,
-
-        //!
-        SCI_GETDOCPOINTER = 2357,
 
         //!
         SCI_SETDOCPOINTER = 2358,
@@ -1687,10 +1706,6 @@ public:
         //! copy the line with the caret.
         SCI_COPYALLOWLINE = 2519,
 
-        //! This message returns a pointer to the document text.  Any
-        //! subsequent message will invalidate the pointer.
-        SCI_GETCHARACTERPOINTER = 2520,
-
         //!
         SCI_INDICSETALPHA = 2523,
 
@@ -2059,9 +2074,6 @@ public:
 
         //!
         SCI_FINDINDICATORHIDE = 2642,
-
-        //!
-        SCI_GETRANGEPOINTER = 2643,
 
         //!
         SCI_GETGAPPOSITION = 2644,
@@ -3537,10 +3549,13 @@ public:
             const QImage &lParam) const;
 
     //! Send the Scintilla message \a msg and return a pointer result.
-    void *SendScintillaPtrResult(unsigned int msg) const;
+    //! SendScintilla() returns long, which is 32 bits on Win64, so a
+    //! message that answers with a pointer is a PtrMessage and only this
+    //! overload set accepts it.
+    void *SendScintillaPtrResult(PtrMessage msg) const;
 
     //! \overload
-    void *SendScintillaPtrResult(unsigned int msg, uintptr_t wParam,
+    void *SendScintillaPtrResult(PtrMessage msg, uintptr_t wParam,
             intptr_t lParam) const;
 
     //! \internal

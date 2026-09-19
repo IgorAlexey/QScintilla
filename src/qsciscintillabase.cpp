@@ -286,19 +286,21 @@ long QsciScintillaBase::SendScintilla(unsigned int msg, unsigned long wParam,
 
 // Send a message to the real Scintilla widget using the low level Scintilla
 // API that returns a pointer result.
-void *QsciScintillaBase::SendScintillaPtrResult(unsigned int msg) const
+void *QsciScintillaBase::SendScintillaPtrResult(PtrMessage msg) const
 {
-    return reinterpret_cast<void *>(sci->WndProc(msg, static_cast<uptr_t>(0),
+    return reinterpret_cast<void *>(sci->WndProc(
+            static_cast<unsigned int>(msg), static_cast<uptr_t>(0),
             static_cast<sptr_t>(0)));
 }
 
 
 // Overloaded pointer result message send.
-void *QsciScintillaBase::SendScintillaPtrResult(unsigned int msg,
+void *QsciScintillaBase::SendScintillaPtrResult(PtrMessage msg,
         uintptr_t wParam, intptr_t lParam) const
 {
-    return reinterpret_cast<void *>(sci->WndProc(msg,
-            static_cast<uptr_t>(wParam), static_cast<sptr_t>(lParam)));
+    return reinterpret_cast<void *>(sci->WndProc(
+            static_cast<unsigned int>(msg), static_cast<uptr_t>(wParam),
+            static_cast<sptr_t>(lParam)));
 }
 
 

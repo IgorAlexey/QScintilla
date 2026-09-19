@@ -287,6 +287,7 @@ add_library(qscintilla STATIC
 )
 
 set_target_properties(qscintilla PROPERTIES AUTOMOC ON)
+target_compile_features(qscintilla PUBLIC cxx_std_20)
 
 target_include_directories(qscintilla PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src)
